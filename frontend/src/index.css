@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: #F3F5F8;
+  color: #12172B;
+  font-family: 'IBM Plex Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: #0EA5A0;
+  color: white;
+}
+
+/* Signature element: the itinerary reads like a strip of boarding-pass
+   stubs. A perforated dashed cut-line separates each day, with a small
+   punched notch on either edge, echoing a real ticket's tear line. */
+.ticket-stub {
+  position: relative;
+}
+.ticket-stub:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: -1.5rem;
+  right: -1.5rem;
+  bottom: 0;
+  border-bottom: 2px dashed #D8DCE6;
+}
+.ticket-notch {
+  position: absolute;
+  bottom: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: #F3F5F8;
+  border: 1px solid #D8DCE6;
+}
+
+.data-figure {
+  font-family: 'IBM Plex Mono', monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
