@@ -1,4 +1,4 @@
-"""RAG search tool - retrieves curated destination knowledge (cached, not live)."""
+
 from langchain_core.tools import tool
 
 from app.rag.retriever import get_rag

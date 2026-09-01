@@ -1,11 +1,4 @@
-"""
-Restaurant search tool — live venue data via Geoapify Places API (free,
-no credit card; OpenStreetMap-backed). See geoapify_client.py for why
-this replaced Foursquare. Geoapify/OSM doesn't expose menu prices or
-star ratings for most venues, so `price` is a category-based estimate
-(flagged via details.price_estimated) and `rating` is left null rather
-than invented.
-"""
+
 from langchain_core.tools import tool
 
 from app.models.schemas import DataSource, NormalizedResult

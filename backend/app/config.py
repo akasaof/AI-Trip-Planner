@@ -1,12 +1,4 @@
-"""
-Central configuration, loaded from environment variables / .env.
 
-All provider keys below are for free tiers (see README for signup links).
-Every tool in app/tools/ requires its real key to return data — there is
-no mock/simulated fallback in this build. If a key is missing, the tool
-returns an empty result and the reason is surfaced back to the user
-rather than silently faked.
-"""
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

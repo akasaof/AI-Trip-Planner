@@ -1,12 +1,4 @@
-"""
-Weather tool — live data via OpenWeatherMap's free Current Weather Data
-endpoint. Important honesty note: OpenWeatherMap's free tier only
-returns *current* conditions (and a 5-day/3-hour forecast) — it cannot
-forecast a specific date months in the future the way a paid long-range
-service can. So for a trip that's weeks or months away, this returns
-today's actual live conditions in that city as a seasonal proxy, clearly
-labeled as such, rather than fabricating a forecast for the exact date.
-"""
+
 import httpx
 from langchain_core.tools import tool
 

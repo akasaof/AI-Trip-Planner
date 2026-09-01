@@ -1,13 +1,4 @@
-"""
-MongoDB Atlas connection (via Motor, the async driver).
 
-Collections map onto the entities from the POC spec. Because Mongo is
-document-oriented, `trip_preferences`, `itinerary_days`, and
-`itinerary_items` are embedded directly inside the `trips` document rather
-than kept as separate joined tables — that's a more natural fit for Mongo
-and avoids join logic, while `messages` and `tool_results` stay as their
-own collections since they grow independently and are queried by trip_id.
-"""
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 
 from app.config import get_settings

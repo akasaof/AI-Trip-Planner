@@ -1,18 +1,4 @@
-# """
-# Shared Travelpayouts helpers, used by flights.py and hotels.py.
 
-# Amadeus permanently decommissioned its Self-Service API portal on
-# 2026-07-17 (not paused — existing keys were disabled and no new
-# self-service signups are possible; only their sales-contract Enterprise
-# tier remains). Travelpayouts — the API platform behind the Aviasales and
-# Hotellook travel-search sites — is the current free, self-serve
-# replacement. Important honesty note carried through to every result
-# this produces: Travelpayouts' free endpoints return *cached, recently
-# observed* prices (what travelers have actually searched/booked
-# recently on that route or for that hotel), not an on-demand live
-# availability search for your exact dates the way a GDS query would be.
-# It's real market data, just not a live quote.
-# """
 import httpx
 
 from app.config import get_settings

@@ -47,3 +47,13 @@ Dubai International Airport (DXB) is one of the busiest hubs globally,
 roughly 20-30 minutes from Downtown by metro or taxi depending on
 traffic. Airport transfers by metro are inexpensive; private taxis take
 about 30-45 minutes to Marina during peak traffic.
+
+
+## Flight Details
+| Detail                  | Information                         |
+| ----------------------- | ----------------------------------- |
+| Distance                | ~2,949 km                           |
+| Non-stop duration       | ~4–4.5 hours                        |
+| Direct airlines         | **Emirates, IndiGo**                |
+| Typical economy one-way | ~₹16,000–₹35,000+ depending on date |
+| Airport                 | MAA → DXB                           |

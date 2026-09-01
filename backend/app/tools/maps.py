@@ -1,11 +1,4 @@
-"""
-Maps / distance tool — live data via OpenRouteService (free tier, API
-key only, no credit card) by default: geocode both places, then request
-driving directions. If GOOGLE_MAPS_API_KEY is set instead, that's tried
-first (for people who already have a Google Cloud key set up). No mock
-fallback — returns an empty dict if neither is configured or the lookup
-fails.
-"""
+
 import httpx
 from langchain_core.tools import tool
 

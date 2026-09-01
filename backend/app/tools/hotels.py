@@ -1,14 +1,4 @@
 
-
-"""
-Hotel search tool — live data via Travelpayouts' Hotellook price-cache
-API (free, self-serve). See travelpayouts_client.py for why this
-replaced Amadeus. Returns recently-cached per-night prices for hotels
-in the destination near your dates — not a live booking-availability
-search, which no free API provides. Labeled via
-details.cached_recent_rate so it's never mistaken for a guaranteed
-live quote.
-"""
 import httpx
 from langchain_core.tools import tool
 

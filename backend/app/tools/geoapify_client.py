@@ -1,14 +1,4 @@
-"""
-Shared Geoapify helpers (geocoding + Places search) used by
-restaurants.py and attractions.py.
 
-Foursquare's free real-time Places search (v3) was deprecated on
-2026-05-15 and replaced with a paid, usage-based product (500 free
-calls/month, then billed per 1,000) plus a completely different
-bulk-data access model — not a drop-in free REST search anymore.
-Geoapify is the current genuinely-free alternative: 3,000 requests/day,
-no credit card, backed by OpenStreetMap place data.
-"""
 import httpx
 
 from app.config import get_settings

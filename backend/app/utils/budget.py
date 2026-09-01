@@ -1,14 +1,7 @@
-"""
-Deterministic budget engine.
 
-Per the spec: "Budget = deterministic calculator, not LLM arithmetic."
-The agent NEVER computes totals itself — it selects candidate flights /
-hotels / activities, and this pure-Python function does the math.
-"""
 from app.models.schemas import BudgetBreakdown, NormalizedResult
 
-# Rough per-day heuristics used only when the LLM/tools don't surface an
-# explicit activities/transport figure. Kept obviously-labelled as estimates.
+
 DEFAULT_DAILY_FOOD_PER_PERSON = 1500.0  # in trip currency, adjust via FX upstream
 DEFAULT_DAILY_TRANSPORT = 800.0
 DEFAULT_DAILY_OTHER = 300.0

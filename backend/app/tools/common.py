@@ -1,17 +1,4 @@
-"""
-Shared helpers for provider tools.
 
-All tools now call real, free-tier live APIs (Travelpayouts, Geoapify,
-OpenWeatherMap, OpenRouteService, open.er-api.com) — there is no mock
-data path. `seeded_random` remains only for the honest, clearly-flagged
-category-based cost *estimates* on restaurants/attractions, since no free
-API exposes real menu or ticket prices; it is never used to fabricate an
-entire result.
-
-`cache_get`/`cache_set` is a tiny in-process TTL cache used for things
-like IATA code lookups and FX rates, so a single trip-planning request
-doesn't re-resolve the same place on every call.
-"""
 import hashlib
 import random
 import time

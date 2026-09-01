@@ -1,9 +1,4 @@
-"""
-Currency conversion tool — live rates via open.er-api.com, a completely
-free API that requires no signup or key at all. Rates for a given base
-currency are cached in-process for an hour to avoid hammering the
-service on repeated calls within a session.
-"""
+
 import httpx
 from langchain_core.tools import tool
 
