@@ -1,34 +1,4 @@
-"""
-Orchestrates the full workflow from Section 3 of the spec:
 
- 1. receive request               -> handled by the router, passed in here
- 2. extract structured trip fields -> extraction.extract_requirement
- 3. validate / ask for missing dates -> _check_missing()
- 4. RAG destination context        -> rag_search tool, called directly (always-on)
- 5. select & call tools            -> deterministic calls to the required tools (see note below)
- 6. normalize results              -> tools already return NormalizedResult
- 7. calculate budget               -> deterministic Python function, NEVER the LLM
- 8. build itinerary                -> deterministic day-by-day assembly, LLM only adds summaries
- 9. validate consistency           -> pydantic validation; enrichment failures degrade silently
-10. persist                        -> Mongo (trips / messages / tool_results)
-11. return React-ready JSON        -> TripPlanResponse
-
-Design note on step 5: earlier versions of this POC let the LLM decide
-which of flights/hotels/restaurants/attractions/weather to call via a
-LangChain tool-calling loop. In practice, on Groq's free/on_demand tier
-(8000 tokens/request), asking a single completion to emit five parallel
-tool calls reliably hit the TPM cap or produced truncated/malformed JSON
-— which is what caused the 413s and 500s seen in testing. Since these
-five tools are *always* needed for any complete trip (they're not
-optional/conditional), calling them directly removes an entire class of
-failure with no loss of capability: the LLM's judgment is used instead
-where it actually adds value — grouping/sequencing the itinerary and
-writing day summaries — and those calls are now small and bounded
-regardless of trip length, so they can't blow the token budget on longer
-trips either. `map_distance` and `currency_convert` remain available
-LangChain tools for future agentic use (e.g. an "optimize my route"
-follow-up) but aren't required for the base plan.
-"""
 from __future__ import annotations
 
 import json
