@@ -169,7 +169,9 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_groq import ChatGroq
 from pydantic import BaseModel, Field
 
-from app.agent.prompts import EXTRACTION_SYSTEM_PROMPT
+
+from app.agent.prompts.extraction import EXTRACTION_SYSTEM_PROMPT
+
 from app.config import get_settings
 from app.models.schemas import TripRequirement
 
