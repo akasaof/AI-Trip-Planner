@@ -44,6 +44,7 @@ class TripRequirement(BaseModel):
     end_date: Optional[dt.date] = None
     preferences: list[str] = Field(default_factory=list)
     trip_type: Optional[str] = None
+   
 
     def missing_required_fields(self) -> list[str]:
         """Dates are required for any live search — everything else can be
@@ -152,6 +153,7 @@ class TripPlanResponse(BaseModel):
     assumptions: list[str] = Field(default_factory=list)
     sources: list[str] = Field(default_factory=list)
     needs_clarification: Optional[str] = None
+    assistant_message: Optional[str] = None
 
 
 # --------------------------------------------------------------------------
@@ -182,3 +184,6 @@ class CreateTripRequest(BaseModel):
 
 class ChatRequest(BaseModel):
     message: str
+
+
+

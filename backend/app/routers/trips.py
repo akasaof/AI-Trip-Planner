@@ -11,6 +11,8 @@ from app.agent.orchestrator import handle_user_message
 from app.db import messages_collection, trips_collection
 from app.models.schemas import ChatRequest, CreateTripRequest, TripPlanResponse, TripRequirement, new_id
 from app.tools.travelpayouts_client import resolve_iata
+
+
 router = APIRouter(prefix="/api/trips", tags=["trips"])
 
 

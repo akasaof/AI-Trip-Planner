@@ -46,12 +46,24 @@ export default function App() {
     setIsLoading(true);
     try {
       const response = tripId ? await api.chat(tripId, message) : await api.createTrip(message);
+      console.log(response)
       setTripId(response.trip_id);
       setPlan(response);
-      const assistantText = response.needs_clarification
+      console.log(response)
+      if(response.assistant_message!==null){
+        console.log("null")
+        const assistantText = response.assistant_message
+        setMessages((prev) => [...prev, newLocalMessage("assistant", assistantText)]);
+      }
+      else{
+        console.log("not null")
+        const assistantText = response.needs_clarification
         ? response.needs_clarification
         : `Here's a ${response.trip_summary.duration_days}-day plan for ${response.trip_summary.destination}. Estimated total: ${response.budget.currency} ${response.budget.total.toLocaleString()} (${response.budget.over_budget ? "over" : "within"} budget).`;
-      setMessages((prev) => [...prev, newLocalMessage("assistant", assistantText)]);
+        setMessages((prev) => [...prev, newLocalMessage("assistant", assistantText)]);
+      }
+      
+      
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Something went wrong reaching the planning backend.";
       setError(msg);

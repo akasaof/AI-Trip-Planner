@@ -28,6 +28,12 @@ from app.utils.budget import calculate_budget
 from app.agent.data_gathering import gather_tool_data
 from app.agent.itinerary_builder import select_for_budget,build_itinerary_skeleton
 from app.agent.enrichment import enrich_with_summaries
+from app.agent.intent import classify_intent
+
+from langchain_core.messages import HumanMessage, SystemMessage
+from langchain_groq import ChatGroq
+from pydantic import BaseModel, Field
+from app.config import get_settings
 
 def _check_missing(requirement: TripRequirement) -> str | None:
     missing = requirement.missing_required_fields()
@@ -55,7 +61,54 @@ def _weather_for_days(requirement: TripRequirement, weather_results: list[Normal
     return by_date
 
 
-async def plan_trip(trip_id: str, requirement: TripRequirement) -> TripPlanResponse:
+async def generate_conversation_response(
+    user_message: str,
+    last_plan: dict
+) -> str:
+    print("Inside funnction")
+    prompt = f"""
+You are a helpful travel assistant.
+
+The user already has the following trip plan:
+
+{last_plan}
+
+The user now says:
+"{user_message}"
+
+Respond naturally to the user's message using the trip plan as context.
+
+Rules:
+- Keep the response short and conversational.
+- Do not rebuild or modify the trip plan.
+- Do not invent information that is not present in the plan.
+- If the user asks something unrelated to the trip, answer briefly.
+- Return only the response text.
+
+Response:
+"""
+    settings = get_settings()
+    llm = ChatGroq(
+             model=settings.groq_model,
+             api_key=settings.groq_api_key,
+             temperature=0,
+             max_tokens=100,
+         )
+     
+    messages = [
+             SystemMessage(content=prompt),
+             HumanMessage(content=user_message),
+         ]
+    response = await llm.ainvoke(prompt)
+    
+    return response.content.strip()
+
+
+
+
+
+
+async def plan_trip(trip_id: str, requirement: TripRequirement,intent:str,user_message:str,trip_doc:dict) -> TripPlanResponse:
     """Runs steps 4-11 of the workflow. Assumes requirement is already
     validated as complete (step 3 happened in the caller)."""
     rag_context = rag_search.invoke({"query": f"{requirement.destination} transport culture weather best time"})
@@ -82,6 +135,8 @@ async def plan_trip(trip_id: str, requirement: TripRequirement) -> TripPlanRespo
         end_date = requirement.start_date + timedelta(days=requirement.duration_days - 1)
 
     sources = sorted({r.source.value for group in normalized.values() for r in group} | {"cached"})
+    result=await generate_conversation_response(user_message,trip_doc) if intent == "conversation" else None
+    
 
     response = TripPlanResponse(
         trip_id=trip_id,
@@ -103,6 +158,7 @@ async def plan_trip(trip_id: str, requirement: TripRequirement) -> TripPlanRespo
         itinerary=built.itinerary,
         assumptions=built.assumptions,
         sources=sources,
+        assistant_message= await generate_conversation_response(user_message,trip_doc) if intent == "conversation" else None
     )
     return response
 
@@ -110,7 +166,11 @@ async def plan_trip(trip_id: str, requirement: TripRequirement) -> TripPlanRespo
 async def handle_user_message(trip_id: str, user_message: str) -> TripPlanResponse:
     """Top-level entry point used by both POST /trips (first message) and
     POST /trips/{id}/chat (follow-ups)."""
+    print("Message",user_message)
+    intent = await classify_intent(user_message)
+    print("intent",intent)
     trip_doc = await trips_collection().find_one({"_id": trip_id})
+    print(trip_doc['last_plan'])
     prior_requirement = TripRequirement(**trip_doc["requirement"]) if trip_doc else TripRequirement()
 
     requirement = await extract_requirement(user_message, prior=prior_requirement)
@@ -137,13 +197,14 @@ async def handle_user_message(trip_id: str, user_message: str) -> TripPlanRespon
             ),
             budget=BudgetBreakdown(currency=requirement.currency or "INR"),
             needs_clarification=clarification,
+            assistant_message= await generate_conversation_response(user_message,trip_doc['last_plan']) if intent == "conversation" else None
         )
         await messages_collection().insert_one(
             Message(trip_id=trip_id, role="assistant", content=clarification).model_dump(mode="json")
         )
         return response
-
-    response = await plan_trip(trip_id, requirement)
+    
+    response = await plan_trip(trip_id, requirement,intent,user_message,trip_doc['last_plan'])
 
     await trips_collection().update_one(
         {"_id": trip_id},
@@ -163,5 +224,9 @@ async def handle_user_message(trip_id: str, user_message: str) -> TripPlanRespon
     await messages_collection().insert_one(
         Message(trip_id=trip_id, role="assistant", content=assistant_summary).model_dump(mode="json")
     )
+    
+
+
+    
     return response
 
